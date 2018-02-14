@@ -1,4 +1,4 @@
-## BeatIt
+## Beat It
 
 ### Details
 The project contains three pieces of code, one for the master and two for the slaves (one for each player)
@@ -25,4 +25,4 @@ The following tasks have to be tackled
 The following features can be added
    + More note sequences
       + The random sequence can be selected once at setup() and once right before replay. Since the code will run until it encounters a null character, the length of note sequence is not a cause for concern.
-   + Interfacing LEDs to display winners and other such details
+   + Interfacing LEDs to display winner and other such details
