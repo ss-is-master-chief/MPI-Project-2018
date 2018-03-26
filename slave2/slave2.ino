@@ -17,15 +17,14 @@ int cPin = 10;
 int dPin = 11;
 int ePin = 12;
 
-// Declaring control string and buffer length
-int recvBufferLength = 10;
-char command[10];
+// Declaring control variable
+char command;
 
 // Setting timeout for score calculation, in seconds
 float timeout = 0.3;
 
-// Setting time between two notes, in seconds
-float noteDelay = 5;
+// Setting the duration of a note, in seconds
+float noteDuration = 0.5;
 
 // Setting time to display result message, in seconds
 float resultDelay = 10;
@@ -34,8 +33,13 @@ float resultDelay = 10;
 float replay = 10;
 
 // Declaring game variables
-int score;
-int timeTaken;
+long score;
+long timeTaken;
+long startPressed;
+long endPressed;
+int buttonState;
+int lastButtonState;
+char scoreStr[10];
 
 void setup() {
   //  Opening channel at 9600 Baud
@@ -57,74 +61,213 @@ void setup() {
 }
 
 void loop() {
- Serial.readBytes(command, recvBufferLength);
- lcd.clear();
- if(strcmp(command, "STOP")==0)
- {
-    // Displaying game over message
-    lcd.print("GAME OVER!");
-    lcd.setCursor(0,1);
-    lcd.print("Calculating Scores");
+  Serial.flush();
+  if(Serial.available())
+  {
+   char command = Serial.read();
+   Serial.println(command);
+   
+   lcd.clear();
+   if(command == 'S')
+   {
+      // Displaying game over message
+      lcd.print("GAME OVER!");
+      lcd.setCursor(0,1);
+      lcd.print("Calculating Scores...");
 
-    delay(timeout * 1000);
-    Serial.write(score);
-    Serial.readBytes(command, recvBufferLength);
-    if(strcmp(command, "ONE WINS")==0)
-    {
-      // Winning actions
-    }
-    else if(strcmp(command, "TWO WINS")==0)
-    {
-      // Losing actions
-    }
-    else
-    {
-      // Tie actions
-    }
-
-    delay(resultDelay*1000);
-
-    for (int i = replay; i>=0; i--)
-    {
-      lcd.clear();
-      lcd.print("New game starting in ");
-      lcd.print(i);
-      lcd.print(" seconds");
-      delay(1000);
-    }
+      delay(timeout * 1000);
+      dtostrf(score, 4, 6, scoreStr);
+      Serial.write(scoreStr);
     
-    // Reseting game
-    score = 0;
- }
- else
- {
-    switch(command[0])
-    {
-      case 'A':
-        lcd.print("A");
-        timeTaken = pulseIn(aPin, LOW, noteDelay*1000);
-        break;
-      case 'B':
-        lcd.print("B");
-        timeTaken = pulseIn(bPin, LOW, noteDelay*1000);
-        break;
-      case 'C':
-        lcd.print("C");
-        timeTaken = pulseIn(cPin, LOW, noteDelay*1000);
-        break;
-      case 'D':
-        lcd.print("D");
-        timeTaken = pulseIn(dPin, LOW, noteDelay*1000);
-        break;
-      case 'E':
-        lcd.print("E");
-        timeTaken = pulseIn(ePin, LOW, noteDelay*1000);
-        break;
-    }
-
-    // Adding to score
-    if(timeTaken == 0)
-      score += noteDelay*1000;
-    score += timeTaken;
+      while(!Serial.available());
+      command = Serial.read();
+      Serial.println(command);
+      if(command == '1')
+      {
+        lcd.clear();
+        lcd.print("You Won!");
+        lcd.setCursor(0,1);
+        lcd.print("Score: ");
+        lcd.print(score);
+      }
+      else if(command == '2')
+      {
+        lcd.clear();
+        lcd.print("You lost...");
+        lcd.setCursor(0,1);
+        lcd.print("Score: ");
+        lcd.print(score);
+      }
+      else
+      {
+        lcd.clear();
+        lcd.print("It was a tie!");
+        lcd.setCursor(0,1);
+        lcd.print("Score: ");
+        lcd.print(score);
+      }
+  
+      delay(resultDelay*1000);
+      
+      for (int i = replay; i>=0; i--)
+      {
+        lcd.clear();
+        lcd.print("New game starting in ");
+        lcd.print(i);
+        lcd.print(" seconds");
+        delay(1000);
+      }
+      
+      // Reseting game
+      score = 0;
+      strcpy(scoreStr, "");
+   }
+   else
+   {
+      switch(command)
+      {
+        case 'A':
+          lcd.print("A");
+          // Recording time taken
+          startPressed = millis();
+          lastButtonState = LOW;
+  
+          while(true)
+          {
+            buttonState = digitalRead(aPin);
+            endPressed = millis();
+  
+            timeTaken = endPressed - startPressed;
+        
+            if (timeTaken >= 1.3*noteDuration*1000) {
+              break;
+            }
+    
+            if (buttonState != lastButtonState) {
+              if(buttonState == HIGH)
+              {
+                break;
+              }
+            }
+            lastButtonState = buttonState;
+            }
+            break;
+        case 'B':
+          lcd.print("B");
+          // Recording time taken
+          startPressed = millis();
+          lastButtonState = LOW;
+  
+          while(true)
+          {
+            buttonState = digitalRead(bPin);
+            endPressed = millis();
+  
+            timeTaken = endPressed - startPressed;
+        
+            if (timeTaken >= 1.3*noteDuration*1000) {
+              break;
+            }
+    
+            if (buttonState != lastButtonState) {
+              if(buttonState == HIGH)
+              {
+                break;
+              }
+            }
+            lastButtonState = buttonState;
+            }
+            break;
+         case 'C':
+          lcd.print("C");  
+          // Recording time taken
+          startPressed = millis();
+          lastButtonState = LOW;
+  
+          while(true)
+          {
+            buttonState = digitalRead(cPin);
+            endPressed = millis();
+  
+            timeTaken = endPressed - startPressed;
+        
+            if (timeTaken >= 1.3*noteDuration*1000) {
+              break;
+            }
+    
+            if (buttonState != lastButtonState) {
+              if(buttonState == HIGH)
+              {
+                break;
+              }
+            }
+            lastButtonState = buttonState;
+            }
+            break;
+        case 'D':
+          lcd.print("D");
+          // Recording time taken
+          startPressed = millis();
+          lastButtonState = LOW;
+  
+          while(true)
+          {
+            buttonState = digitalRead(dPin);
+            endPressed = millis();
+  
+            timeTaken = endPressed - startPressed;
+        
+            if (timeTaken >= 1.3*noteDuration*1000) {
+              break;
+            }
+    
+            if (buttonState != lastButtonState) {
+              if(buttonState == HIGH)
+              {
+                break;
+              }
+            }
+            lastButtonState = buttonState;
+            }
+            break;
+        case 'E':
+          lcd.print("E");  
+          // Recording time taken
+          startPressed = millis();
+          lastButtonState = LOW;
+  
+          while(true)
+          {
+            buttonState = digitalRead(ePin);
+            endPressed = millis();
+  
+            timeTaken = endPressed - startPressed;
+        
+            if (timeTaken >= 1.3*noteDuration*1000) {
+              break;
+            }
+    
+            if (buttonState != lastButtonState) {
+              if(buttonState == HIGH)
+              {
+                break;
+              }
+            }
+            lastButtonState = buttonState;
+            }
+            break;
+  //      case 'F':
+  //        lcd.print("F");
+  //        timeTaken = pulseIn(ePin, LOW, 1.3*noteDuration*1000);
+  //        break;
+  //      case 'G':
+  //        lcd.print("G");
+  //        timeTaken = pulseIn(ePin, LOW, 1.3*noteDuration*1000);
+  //        break;
+      }
+      
+      // Adding to score
+      score += timeTaken;
+   }
  }
 }
