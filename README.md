@@ -5,14 +5,15 @@ The project contains three pieces of code, one for the master and two for the sl
 The new features of the code, in it's current form, are as enumerated below
    + The master and slave communicate via the Serial channel   
       + The master's TX pin will be connected to the RX pin of both slaves, and both slaves' TX pin will be connected to the RX pin of the master's
-      + Although TX is a OUTPUT only pin and there shouldn't be a problem when the one slave's transmitted data reaches the other's TX, there are provisions to ensure that when one transmits, the other shouldn't (by a delay() command)
+      + Although TX is a OUTPUT only pin and there shouldn't be a problem when the one slave's transmitted data reaches the other's TX, there are provisions to ensure that when one transmits, the other shouldn't (by a command from the master)
       + This reduced the number of pins needed for master-slave communication, from 8 to 2. This wouldn't have been a problem in the master board, but on the slave, an additional 5 pins were required for the input buttons and 6 more for the LCD board
-      + The signals have been defined as 'S', '1', '2', 'T', 'A', 'B', 'C', 'D', 'E' 
+      + The signals have been defined as 'S', '1', '2', 'T', 'A', 'B', 'C', 'D', 'E', 'P', 'Q'
    + The game will be replayable. After the declaration of the results, all three boards will wait for a predetermined time, before resetting and starting another round again. As of now, it will follow the same sequence
    + In case a slave fails to transmit the score of its player, the master will take them maximum possible score
    + The code for the LCD interfacing is done for the slaves
       + The slave will display the note to be played now, a message when the game ends, the number of seconds left before starting a new round
    + The sounds are played as per the note sequence, where A, B, C, D, E, F, G have been defined, and can play. An additional Z note has been defined to allow for pauses. No sound will be emitted when Z is encountered.
+   + When the game is over, the master will send a P on the serial to indicate that slave 1 has to transmit its score. Then the master sends a Q on the serial to indicate to slave 2 that it has to transmit its score
 
 
 ### To-Do
@@ -30,6 +31,9 @@ The following features can be added
    + Interfacing LEDs to display winner and other such details
 
 ### Change Log
+#### 28th March
++ Now P and Q are used to signal when scores are sent
++ Removed timeout and delay(timeout)s for timing when scores are sent
 #### 26th March
 + Command words from Master to Slaves are now changed to single characters, to allow faster, and easier transmission of commands
 + Slaves now listen for buttons only when an input is recieved
