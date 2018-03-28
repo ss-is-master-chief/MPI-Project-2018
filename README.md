@@ -7,7 +7,7 @@ The new features of the code, in it's current form, are as enumerated below
       + The master's TX pin will be connected to the RX pin of both slaves, and both slaves' TX pin will be connected to the RX pin of the master's
       + Although TX is a OUTPUT only pin and there shouldn't be a problem when the one slave's transmitted data reaches the other's TX, there are provisions to ensure that when one transmits, the other shouldn't (by a command from the master)
       + This reduced the number of pins needed for master-slave communication, from 8 to 2. This wouldn't have been a problem in the master board, but on the slave, an additional 5 pins were required for the input buttons and 6 more for the LCD board
-      + The signals have been defined as 'S', '1', '2', 'T', 'A', 'B', 'C', 'D', 'E', 'P', 'Q'
+      + The signals have been defined as 'S', '1', '2', 'T', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'Z', 'P', 'Q'
    + The game will be replayable. After the declaration of the results, all three boards will wait for a predetermined time, before resetting and starting another round again. As of now, it will follow the same sequence
    + In case a slave fails to transmit the score of its player, the master will take them maximum possible score
    + The code for the LCD interfacing is done for the slaves
