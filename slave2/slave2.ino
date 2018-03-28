@@ -20,11 +20,8 @@ int ePin = 12;
 // Declaring control variable
 char command;
 
-// Setting timeout for score calculation, in seconds
-float timeout = 0.3;
-
 // Setting the duration of a note, in seconds
-float noteDuration = 0.5;
+float noteDuration = 1;
 
 // Setting time to display result message, in seconds
 float resultDelay = 10;
@@ -75,14 +72,20 @@ void loop() {
       lcd.setCursor(0,1);
       lcd.print("Calculating Scores...");
 
-      delay(timeout * 1000);
       dtostrf(score, 4, 6, scoreStr);
-      Serial.write(scoreStr);
+      while(1){
+        while(!Serial.available());
+        if(Serial.read() == 'Q'){
+          Serial.write(scoreStr);
+          break;
+        }
+      }
+
     
       while(!Serial.available());
       command = Serial.read();
       Serial.println(command);
-      if(command == '1')
+      if(command == '2')
       {
         lcd.clear();
         lcd.print("You Won!");
@@ -90,7 +93,7 @@ void loop() {
         lcd.print("Score: ");
         lcd.print(score);
       }
-      else if(command == '2')
+      else if(command == '1')
       {
         lcd.clear();
         lcd.print("You lost...");
