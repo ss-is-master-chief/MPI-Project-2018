@@ -1,11 +1,7 @@
 #include "pitches.h"
-// To include audio driver code
-
-// Setting timeout for score calculation, in seconds
-float timeout = 0.3;
 
 // Setting duration for each note, in seconds
-float noteDuration = 0.5;
+float noteDuration = 1;
 
 // Setting note value, for pitches
 float noteValue = 1/noteDuration;
@@ -43,16 +39,13 @@ void loop() {
     Serial.write('S');
     
     // Getting scores from slaves
+    Serial.write('P');
     if(Serial.available())
       score1 = Serial.parseFloat();
-    // Delay to prevent collision of inputs
-    delay(timeout * 1000);
+    
+    Serial.write('Q');
     if(Serial.available())
       score2 = Serial.parseFloat();
-
-//    Serial.println(score1);
-//    Serial.println(score2);
-    
 
     if(score1 < score2)
       Serial.write('1');
