@@ -13,11 +13,15 @@ float noteDuration = 0.5;
 // Setting time to display result message, in seconds
 float resultDelay = 10;
 
-// Setting replay wait time
-float replay = 10;
-
 // Setting speaker pin
 int speakerPin = 8;
+
+// Defining pins for note indicators
+int aOutPin = 2;
+int bOutPin = 3;
+int cOutPin = 4;
+int dOutPin = 5;
+int eOutPin = 6;
 
 // Declaring game variables
 float score1, score2;
@@ -29,7 +33,14 @@ void setup() {
   Serial.begin(9600);
   s2.begin(9600);
   currentNote = 0;
-  noteSequence = "ABCDEZABCDEZABCDEZ";
+  noteSequence = "EEEZEEEZEGCDEZFFFFFEEZEEDEDZGZ";
+
+  // Setting pin modes
+  pinMode(aOutPin, OUTPUT);
+  pinMode(bOutPin, OUTPUT);
+  pinMode(cOutPin, OUTPUT);
+  pinMode(dOutPin, OUTPUT);
+  pinMode(eOutPin, OUTPUT);
 
   // To allow slaves to come online
   delay(1000);
@@ -39,6 +50,14 @@ void setup() {
 void loop() {
   Serial.flush();
   s2.flush();
+
+  // Resetting note indicators
+  digitalWrite(aOutPin, LOW);
+  digitalWrite(bOutPin, LOW);
+  digitalWrite(cOutPin, LOW);
+  digitalWrite(dOutPin, LOW);
+  digitalWrite(eOutPin, LOW);
+  
   if(noteSequence[currentNote] == '\0')
   { 
     // Sending stop signal
@@ -72,8 +91,7 @@ void loop() {
     s2.flush();
 
     delay(resultDelay*1000);
-     
-    delay(replay*1000);
+    
     // Resetting game
     currentNote = 0;
   }
@@ -94,26 +112,31 @@ void loop() {
     case 'C':
       Serial.write('C');
       s2.write('C');
+      digitalWrite(aOutPin, HIGH);
       sing('C', noteDuration);
       break;    
     case 'D':
       Serial.write('D');
       s2.write('D');
+      digitalWrite(bOutPin, HIGH);
       sing('D', noteDuration);
       break;
     case 'E':
       Serial.write('E');
       s2.write('E');
+      digitalWrite(cOutPin, HIGH);
       sing('E', noteDuration);
       break;
     case 'F':
       Serial.write('F');
       s2.write('F');
+      digitalWrite(dOutPin, HIGH);
       sing('F', noteDuration);
       break;
     case 'G':
       Serial.write('G');
       s2.write('G');
+      digitalWrite(eOutPin, HIGH);
       sing('G', noteDuration);
       break;
     default:
@@ -122,6 +145,7 @@ void loop() {
    }
   }
 }
+
 
 void sing(char note, float noteDuration)
 {  
@@ -159,3 +183,4 @@ void sing(char note, float noteDuration)
   }
   return;
 }
+  
