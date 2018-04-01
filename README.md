@@ -13,7 +13,7 @@ The features of the code, in it's current form, are as enumerated below
    + The code for the LCD interfacing is done for the slaves
       + The slave will display the note to be played now, a message when the game ends, the number of seconds left before starting a new round
    + The sounds are played as per the note sequence, where A, B, C, D, E, F, G have been defined, and can play. An additional Z note has been defined to allow for pauses. No sound will be emitted when Z is encountered.
-   + When the game is over, the master will send a P on the serial to indicate that slave 1 has to transmit its score. Then the master sends a P on the softare serial to indicate to slave 2 that it has to transmit its score
+   + When the game is over, the master will send a P on the serial to indicate that slave 1 has to transmit its score. Then the master sends a P on the software serial to indicate to slave 2 that it has to transmit its score
    + The scores are calculated as float, and are transmitted as a string
 
 
